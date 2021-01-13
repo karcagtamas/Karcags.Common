@@ -17,7 +17,7 @@ namespace Karcags.Common.Tools
         where TEntity : class, IEntity
     {
         private readonly DbContext _context;
-        private readonly ILoggerService _logger;
+        protected readonly ILoggerService _logger;
         protected readonly IUtilsService Utils;
         protected readonly IMapper Mapper;
         protected readonly string Entity;
