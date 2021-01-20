@@ -296,7 +296,7 @@ namespace Karcags.Common.Tools.Services
 
     public interface ILogger<T>
     {
-        void LogInformation(string? toString);
+        void LogInformation(string toString);
         void LogError(string s);
     }
 }

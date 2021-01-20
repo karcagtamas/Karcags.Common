@@ -8,7 +8,7 @@ namespace Karcags.Common.Tools.Controllers
     /// <typeparam name="TEntity">Type of Entity</typeparam>
     /// <typeparam name="TModel">Type of Model object</typeparam>
     /// <typeparam name="TElement">Type of Return element</typeparam>
-    public sealed class MyController<TEntity, TModel, TElement> : ControllerBase, IController<TModel>
+    public class MyController<TEntity, TModel, TElement> : ControllerBase, IController<TModel>
         where TEntity : class, IEntity
     {
         private readonly IRepository<TEntity> _service;
