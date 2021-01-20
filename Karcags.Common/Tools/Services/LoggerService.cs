@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Karcags.Common.Tools.Services
 {
@@ -292,11 +293,5 @@ namespace Karcags.Common.Tools.Services
         {
             this.LogAnonymousInformation(service, action, ids.Select(x => x.ToString()).ToList(), entity);
         }
-    }
-
-    public interface ILogger<T>
-    {
-        void LogInformation(string toString);
-        void LogError(string s);
     }
 }
