@@ -9,7 +9,7 @@ namespace Karcags.Common.Annotations
     [AttributeUsage(AttributeTargets.Property)]
     public class MinNumberAttribute : ValidationAttribute
     {
-        private int Min { get; set; }
+        private int Min { get; }
 
         /// <summary>
         /// Add annotation
@@ -17,7 +17,7 @@ namespace Karcags.Common.Annotations
         /// <param name="min">Min value parameter</param>
         public MinNumberAttribute(int min)
         {
-            this.Min = min;
+            Min = min;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Karcags.Common.Annotations
             try
             {
                 // Try convert to nullable int
-                int? number = (int?)value;
+                var number = (int?)value;
 
                 // Ignore null values
                 if (number == null)
@@ -40,9 +40,9 @@ namespace Karcags.Common.Annotations
                 }
 
                 // Check minimum (explicit)
-                if (number < this.Min)
+                if (number < Min)
                 {
-                    return new ValidationResult($"Value is less than {this.Min}");
+                    return new ValidationResult($"Value is less than {Min}");
                 }
             }
             catch (Exception)

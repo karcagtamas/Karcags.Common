@@ -37,13 +37,13 @@ namespace Karcags.Common.Enums
         /// <exception cref="ArgumentException">When the Ordering is invalid</exception>
         public static string GetValue(OrderDirection direction)
         {
-            switch (direction)
+            return direction switch
             {
-                case OrderDirection.Ascend: return "asc";
-                case OrderDirection.Descend: return "desc";
-                case OrderDirection.None: return "none";
-                default: throw new ArgumentException("Direction does not exist");
-            }
+                OrderDirection.Ascend => "asc",
+                OrderDirection.Descend => "desc",
+                OrderDirection.None => "none",
+                _ => throw new ArgumentException("Direction does not exist")
+            };
         }
 
         /// <summary>
@@ -54,13 +54,13 @@ namespace Karcags.Common.Enums
         /// <exception cref="ArgumentException">When string is invalid</exception>
         public static OrderDirection ValueToKey(string value)
         {
-            switch (value)
+            return value switch
             {
-                case "asc": return OrderDirection.Ascend;
-                case "desc": return OrderDirection.Descend;
-                case "none": return OrderDirection.None;
-                default: throw new ArgumentException("Value does not exist");
-            }
+                "asc" => OrderDirection.Ascend,
+                "desc" => OrderDirection.Descend,
+                "none" => OrderDirection.None,
+                _ => throw new ArgumentException("Value does not exist")
+            };
         }
     }
 }

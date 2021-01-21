@@ -81,15 +81,27 @@ namespace Karcags.Common.Helpers
         /// <returns></returns>
         public static DateTime ToDay(DateTime date)
         {
-            return new DateTime(date.Year, date.Month, date.Day);
+            return new(date.Year, date.Month, date.Day);
         }
 
+        /// <summary>
+        /// CompareDates by Year, Month, Day and Hour
+        /// </summary>
+        /// <param name="date1">Date a</param>
+        /// <param name="date2">Date b</param>
+        /// <returns>True if the two date is equal to each other</returns>
         public static bool CompareDates(DateTime date1, DateTime date2)
         {
             return date1.Year == date2.Year && date1.Month == date2.Month && date1.Day == date2.Day &&
                    date1.Hour == date2.Hour;
         }
 
+        /// <summary>
+        /// Convert Date to file name compatible format.
+        /// [Year]-[Month]-[Day]-[Hour]-[Min]-[Sec]
+        /// </summary>
+        /// <param name="date">Date</param>
+        /// <returns>Formatted text</returns>
         public static string ToFileName(DateTime date)
         {
             return $"{date:yyyy-MM-dd-HH-mm-ss}";

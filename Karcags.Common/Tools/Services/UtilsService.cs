@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Karcags.Common.Tools.Services
 {
-    public class UtilsService : IUtilsService
+    public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly DbContext _context;
+        private readonly TContext _context;
 
         /// <summary>
         /// Utils Service constructor
         /// </summary>
         /// <param name="contextAccessor">Context Accessor</param>
         /// <param name="context">Context</param>
-        public UtilsService(IHttpContextAccessor contextAccessor, DbContext context)
+        public UtilsService(IHttpContextAccessor contextAccessor, TContext context)
         {
             this._contextAccessor = contextAccessor;
             this._context = context;

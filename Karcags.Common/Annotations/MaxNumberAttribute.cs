@@ -9,7 +9,7 @@ namespace Karcags.Common.Annotations
     [AttributeUsage(AttributeTargets.Property)]
     public class MaxNumberAttribute : ValidationAttribute
     {
-        private int Max { get; set; }
+        private int Max { get; }
 
         /// <summary>
         /// Add annotation
@@ -17,7 +17,7 @@ namespace Karcags.Common.Annotations
         /// <param name="max">Max value parameter</param>
         public MaxNumberAttribute(int max)
         {
-            this.Max = max;
+            Max = max;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Karcags.Common.Annotations
             try
             {
                 // Try convert to nullable int
-                int? number = (int?)value;
+                var number = (int?)value;
 
                 // Ignore null values
                 if (number == null)
@@ -40,9 +40,9 @@ namespace Karcags.Common.Annotations
                 }
 
                 // Check maximum (explicit)
-                if (number > this.Max)
+                if (number > Max)
                 {
-                    return new ValidationResult($"Value is bigger than {this.Max}");
+                    return new ValidationResult($"Value is bigger than {Max}");
                 }
             }
             catch (Exception)

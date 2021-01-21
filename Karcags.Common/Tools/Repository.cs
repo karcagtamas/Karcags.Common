@@ -17,7 +17,7 @@ namespace Karcags.Common.Tools
         where TEntity : class, IEntity
     {
         private readonly DbContext _context;
-        protected readonly ILoggerService _logger;
+        protected readonly ILoggerService Logger;
         protected readonly IUtilsService Utils;
         protected readonly IMapper Mapper;
         protected readonly string Entity;
@@ -33,11 +33,11 @@ namespace Karcags.Common.Tools
         protected Repository(DbContext context, ILoggerService logger, IUtilsService utils,
             IMapper mapper, string entity)
         {
-            this._context = context;
-            _logger = logger;
-            this.Utils = utils;
-            this.Mapper = mapper;
-            this.Entity = entity;
+            _context = context;
+            Logger = logger;
+            Utils = utils;
+            Mapper = mapper;
+            Entity = entity;
         }
         
         /// <summary>
@@ -47,10 +47,10 @@ namespace Karcags.Common.Tools
         public void Add(TEntity entity)
         {
             // Add
-            this._context.Set<TEntity>().Add(entity);
+            _context.Set<TEntity>().Add(entity);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         public void AddRange<TU>(IEnumerable<TEntity> entities) where TU : class, IEntity
@@ -62,28 +62,28 @@ namespace Karcags.Common.Tools
                 var creator = type.GetProperty("CreatorId");
                 if (creator != null)
                 {
-                    var user = this.Utils.GetCurrentUser<TU>();
+                    var user = Utils.GetCurrentUser<TU>();
                     creator.SetValue(x, user.Id, null);
                 }
 
                 var lastUpdater = type.GetProperty("LastUpdaterId");
                 if (lastUpdater != null)
                 {
-                    var user = this.Utils.GetCurrentUser<TU>();
+                    var user = Utils.GetCurrentUser<TU>();
                     lastUpdater.SetValue(x, user.Id, null);
                 }
 
                 var userField = type.GetProperty("UserId");
                 if (userField != null)
                 {
-                    var user = this.Utils.GetCurrentUser<TU>();
+                    var user = Utils.GetCurrentUser<TU>();
                     userField.SetValue(x, user.Id, null);
                 }
 
                 var owner = type.GetProperty("OwnerId");
                 if (owner != null)
                 {
-                    var user = this.Utils.GetCurrentUser<TU>();
+                    var user = Utils.GetCurrentUser<TU>();
                     owner.SetValue(x, user.Id, null);
                 }
 
@@ -92,10 +92,10 @@ namespace Karcags.Common.Tools
 
             // Add
             var entityList = entities.ToList();
-            this._context.Set<TEntity>().AddRange(entityList);
+            _context.Set<TEntity>().AddRange(entityList);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Karcags.Common.Tools
         /// <typeparam name="T">Type of mappable entity</typeparam>
         public void Add<T>(T entity)
         {
-            this.Add(this.Mapper.Map<TEntity>(entity));
+            Add(Mapper.Map<TEntity>(entity));
         }
 
         /// <summary>
@@ -116,10 +116,10 @@ namespace Karcags.Common.Tools
         {
             // Add
             var entityList = entities.ToList();
-            this._context.Set<TEntity>().AddRange(entityList);
+            _context.Set<TEntity>().AddRange(entityList);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         public void Add<TU>(TEntity entity) where TU : class, IEntity
@@ -129,36 +129,36 @@ namespace Karcags.Common.Tools
             var creator = type.GetProperty("CreatorId");
             if (creator != null)
             {
-                var user = this.Utils.GetCurrentUser<TU>();
+                var user = Utils.GetCurrentUser<TU>();
                 creator.SetValue(entity, user.Id, null);
             }
 
             var lastUpdater = type.GetProperty("LastUpdaterId");
             if (lastUpdater != null)
             {
-                var user = this.Utils.GetCurrentUser<TU>();
+                var user = Utils.GetCurrentUser<TU>();
                 lastUpdater.SetValue(entity, user.Id, null);
             }
 
             var userField = type.GetProperty("UserId");
             if (userField != null)
             {
-                var user = this.Utils.GetCurrentUser<TU>();
+                var user = Utils.GetCurrentUser<TU>();
                 userField.SetValue(entity, user.Id, null);
             }
 
             var owner = type.GetProperty("OwnerId");
             if (owner != null)
             {
-                var user = this.Utils.GetCurrentUser<TU>();
+                var user = Utils.GetCurrentUser<TU>();
                 owner.SetValue(entity, user.Id, null);
             }
 
             // Add
-            this._context.Set<TEntity>().Add(entity);
+            _context.Set<TEntity>().Add(entity);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         /// <summary>
@@ -168,17 +168,17 @@ namespace Karcags.Common.Tools
         /// <typeparam name="T">Type of mappable entities</typeparam>
         public void AddRange<T>(IEnumerable<T> entities)
         {
-            this.AddRange(this.Mapper.Map<IEnumerable<TEntity>>(entities));
+            AddRange(Mapper.Map<IEnumerable<TEntity>>(entities));
         }
 
         public void Add<T, TU>(T entity) where TU : class, IEntity
         {
-            this.Add<TU>(this.Mapper.Map<TEntity>(entity));
+            Add<TU>(Mapper.Map<TEntity>(entity));
         }
 
         public void AddRange<T, TU>(IEnumerable<T> entities) where TU : class, IEntity
         {
-            this.AddRange<TU>(this.Mapper.Map<IEnumerable<TEntity>>(entities));
+            AddRange<TU>(Mapper.Map<IEnumerable<TEntity>>(entities));
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Karcags.Common.Tools
         /// </summary>
         public void Complete()
         {
-            this._context.SaveChanges();
+            _context.SaveChanges();
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace Karcags.Common.Tools
         public TEntity Get(params object[] keys)
         {
             // Get
-            var entity = this._context.Set<TEntity>().Find(keys);
+            var entity = _context.Set<TEntity>().Find(keys);
 
             return entity;
         }
@@ -210,7 +210,7 @@ namespace Karcags.Common.Tools
         /// <returns>Mapped entity to the destination type</returns>
         public T Get<T>(params object[] keys)
         {
-            return this.Mapper.Map<T>(this.Get(keys));
+            return Mapper.Map<T>(Get(keys));
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Karcags.Common.Tools
         public List<TEntity> GetAll()
         {
             // Get
-            var list = this._context.Set<TEntity>().ToList();
+            var list = _context.Set<TEntity>().ToList();
 
             return list;
         }
@@ -232,7 +232,7 @@ namespace Karcags.Common.Tools
         /// <returns>Mapped entity list to the destination type</returns>
         public List<T> GetAll<T>()
         {
-            return this.Mapper.Map<List<T>>(this.GetAll());
+            return Mapper.Map<List<T>>(GetAll());
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Karcags.Common.Tools
         /// <returns>Filtered list of entities</returns>
         public List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate)
         {
-            return this.GetList(predicate, null, null);
+            return GetList(predicate, null, null);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Karcags.Common.Tools
         /// <returns>Filtered list of entities with max count.</returns>
         public List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate, int? count)
         {
-            return this.GetList(predicate, count, null);
+            return GetList(predicate, count, null);
         }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace Karcags.Common.Tools
         public List<TEntity> GetList(Expression<Func<TEntity, bool>> predicate, int? count, int? skip)
         {
             // Get
-            var query = this._context.Set<TEntity>().Where(predicate);
+            var query = _context.Set<TEntity>().Where(predicate);
 
             // Count
             if (count != null)
@@ -294,7 +294,7 @@ namespace Karcags.Common.Tools
         /// <returns>Mapped filtered list of entities to destination type</returns>
         public List<T> GetList<T>(Expression<Func<TEntity, bool>> predicate)
         {
-            return this.Mapper.Map<List<T>>(this.GetList(predicate));
+            return Mapper.Map<List<T>>(GetList(predicate));
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace Karcags.Common.Tools
         /// <returns>Mapped filtered list of entities with max count to destination type</returns>
         public List<T> GetList<T>(Expression<Func<TEntity, bool>> predicate, int? count)
         {
-            return this.Mapper.Map<List<T>>(this.GetList(predicate, count));
+            return Mapper.Map<List<T>>(GetList(predicate, count));
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace Karcags.Common.Tools
         /// <returns>Mapped filtered list of entities with max count and first skip to destination type</returns>
         public List<T> GetList<T>(Expression<Func<TEntity, bool>> predicate, int? count, int? skip)
         {
-            return this.Mapper.Map<List<T>>(this.GetList(predicate, count, skip));
+            return Mapper.Map<List<T>>(GetList(predicate, count, skip));
         }
 
         /// <summary>
@@ -329,10 +329,10 @@ namespace Karcags.Common.Tools
         public void Remove(TEntity entity)
         {
             // Remove
-            this._context.Set<TEntity>().Remove(entity);
+            _context.Set<TEntity>().Remove(entity);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         /// <summary>
@@ -342,15 +342,15 @@ namespace Karcags.Common.Tools
         public void Remove(int id)
         {
             // Get entity
-            var entity = this.Get(id);
+            var entity = Get(id);
 
             if (entity == null)
             {
-                throw this._logger.LogAnonymousInvalidThings(this.GetService(), "id", this.GetEntityErrorMessage());
+                throw Logger.LogAnonymousInvalidThings(GetService(), "id", GetEntityErrorMessage());
             }
 
             // Remove
-            this.Remove(this.Get(id));
+            Remove(Get(id));
         }
 
         /// <summary>
@@ -363,10 +363,10 @@ namespace Karcags.Common.Tools
             var entityList = entities.ToList();
 
             // Remove range
-            this._context.Set<TEntity>().RemoveRange(entityList);
+            _context.Set<TEntity>().RemoveRange(entityList);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace Karcags.Common.Tools
             var idList = ids.ToList();
             if (idList.Any())
             {
-                this.RemoveRange(this.GetList(x => idList.Contains(x.Id)));
+                RemoveRange(GetList(x => idList.Contains(x.Id)));
             }
         }
 
@@ -398,10 +398,10 @@ namespace Karcags.Common.Tools
             }
 
             // Update
-            this._context.Set<TEntity>().Update(entity);
+            _context.Set<TEntity>().Update(entity);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         /// <summary>
@@ -413,18 +413,18 @@ namespace Karcags.Common.Tools
         public void Update<T>(int id, T entity)
         {
             // Get original
-            var originalEntity = this.Get(id);
+            var originalEntity = Get(id);
 
             if (originalEntity == null)
             {
-                throw this._logger.LogAnonymousInvalidThings(this.GetService(), "id", this.GetEntityErrorMessage());
+                throw Logger.LogAnonymousInvalidThings(GetService(), "id", GetEntityErrorMessage());
             }
 
             // Update model to original entity
-            this.Mapper.Map(entity, originalEntity);
+            Mapper.Map(entity, originalEntity);
 
             // Update
-            this.Update(originalEntity);
+            Update(originalEntity);
         }
 
         /// <summary>
@@ -435,10 +435,10 @@ namespace Karcags.Common.Tools
         {
             // Update 
             var entityList = entities.ToList();
-            this._context.Set<TEntity>().UpdateRange(entityList);
+            _context.Set<TEntity>().UpdateRange(entityList);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         /// <summary>
@@ -449,9 +449,9 @@ namespace Karcags.Common.Tools
         public void UpdateRange<T>(Dictionary<int, T> entities)
         {
             // Update
-            foreach (int i in entities.Keys)
+            foreach (var i in entities.Keys)
             {
-                this.Update(i, entities[i]);
+                Update(i, entities[i]);
             }
         }
 
@@ -468,33 +468,33 @@ namespace Karcags.Common.Tools
             var lastUpdater = type.GetProperty("LastUpdaterId");
             if (lastUpdater != null)
             {
-                var user = this.Utils.GetCurrentUser<TU>();
+                var user = Utils.GetCurrentUser<TU>();
                 lastUpdater.SetValue(entity, user.Id, null);
             }
 
             // Update
-            this._context.Set<TEntity>().Update(entity);
+            _context.Set<TEntity>().Update(entity);
 
             // Save
-            this.Complete();
+            Complete();
         }
 
         public void Update<T, TU>(int id, T entity) where TU : class, IEntity
         {
             // Get original
-            var originalEntity = this.Get(id);
+            var originalEntity = Get(id);
 
             if (originalEntity == null)
             {
-                var user = this.Utils.GetCurrentUser<TU>();
-                throw this._logger.LogInvalidThings(user.ToString(), this.GetService(), "id", this.GetEntityErrorMessage());
+                var user = Utils.GetCurrentUser<TU>();
+                throw Logger.LogInvalidThings(user.ToString(), GetService(), "id", GetEntityErrorMessage());
             }
 
             // Update model to original entity
-            this.Mapper.Map(entity, originalEntity);
+            Mapper.Map(entity, originalEntity);
 
             // Update
-            this.Update(originalEntity);
+            Update(originalEntity);
         }
 
         /// <summary>
@@ -503,7 +503,7 @@ namespace Karcags.Common.Tools
         /// <returns>Entity Service name</returns>
         protected string GetService()
         {
-            return $"{this.Entity} Service";
+            return $"{Entity} Service";
         }
 
         /// <summary>
@@ -513,7 +513,7 @@ namespace Karcags.Common.Tools
         /// <returns>Event name</returns>
         protected string GetEvent(string action)
         {
-            return $"{action} {this.Entity}";
+            return $"{action} {Entity}";
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace Karcags.Common.Tools
         /// <returns>Error message</returns>
         protected string GetEntityErrorMessage()
         {
-            return $"{this.Entity} does not exist";
+            return $"{Entity} does not exist";
         }
 
         /// <summary>
@@ -533,7 +533,7 @@ namespace Karcags.Common.Tools
         private string GetNotificationAction(string action)
         {
             return string.Join("",
-                this.GetEvent(action).Split(" ").Select(x => char.ToUpper(x[0]) + x.Substring(1).ToLower()));
+                GetEvent(action).Split(" ").Select(x => char.ToUpper(x[0]) + x.Substring(1).ToLower()));
         }
 
         /// <summary>
@@ -543,27 +543,25 @@ namespace Karcags.Common.Tools
         /// <param name="firstType">First entity's type</param>
         /// <param name="entity">Entity</param>
         /// <returns>Declared argument value list</returns>
-        private List<string> DetermineArguments(List<string> nameList, Type firstType, TEntity entity)
+        private List<string> DetermineArguments(IEnumerable<string> nameList, Type firstType, TEntity entity)
         {
             var args = new List<string>();
 
-            foreach (string i in nameList)
+            foreach (var i in nameList)
             {
-                string[] propList = i.Split(".");
+                var propList = i.Split(".");
                 var lastType = firstType;
                 object lastEntity = entity;
 
-                foreach (string propElement in propList)
+                foreach (var propElement in propList)
                 {
                     // Get inner entity from entity
                     var prop = lastType.GetProperty(propElement);
-                    if (prop != null)
+                    if (prop == null) continue;
+                    lastEntity = prop.GetValue(lastEntity);
+                    if (lastEntity != null)
                     {
-                        lastEntity = prop.GetValue(lastEntity);
-                        if (lastEntity != null)
-                        {
-                            lastType = lastEntity.GetType();
-                        }
+                        lastType = lastEntity.GetType();
                     }
                 }
 
@@ -612,29 +610,23 @@ namespace Karcags.Common.Tools
         /// <returns>Ordered all list</returns>
         public List<TEntity> GetOrderedAll(string orderBy, string direction)
         {
-            if (!string.IsNullOrEmpty(orderBy))
+            if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
+            var type = typeof(TEntity);
+            var property = type.GetProperty(orderBy);
+
+            if (property == null)
             {
-                var type = typeof(TEntity);
-                var property = type.GetProperty(orderBy);
-
-                if (property == null)
-                {
-                    throw new ArgumentException("Property does not exist");
-                }
-
-                switch (direction)
-                {
-                    case "asc":
-                        return this.GetAll().OrderBy(x => property.GetValue(x)).ToList();
-                    case "desc":
-                        return this.GetAll().OrderByDescending(x => property.GetValue(x)).ToList();
-                    case "none":
-                        return this.GetAll();
-                    default: throw new ArgumentException("Ordering direction does not exist");
-                }
+                throw new ArgumentException("Property does not exist");
             }
 
-            throw new ArgumentException("Order by value is empty or null");
+            return direction switch
+            {
+                "asc" => GetAll().OrderBy(x => property.GetValue(x)).ToList(),
+                "desc" => GetAll().OrderByDescending(x => property.GetValue(x)).ToList(),
+                "none" => GetAll(),
+                _ => throw new ArgumentException("Ordering direction does not exist")
+            };
+
         }
 
         /// <summary>
@@ -646,7 +638,7 @@ namespace Karcags.Common.Tools
         /// <returns>Mapped and ordered list</returns>
         public List<T> GetOrderedAll<T>(string orderBy, string direction)
         {
-            return this.Mapper.Map<List<T>>(this.GetOrderedAll(orderBy, direction));
+            return Mapper.Map<List<T>>(GetOrderedAll(orderBy, direction));
         }
     }
 }
